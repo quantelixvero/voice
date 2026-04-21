@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DrX Voice Typing</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-mode">
+
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-microphone-lines"></i>
+            <h1>DrX Voice Typing</h1>
+        </div>
+        <div class="nav-links">
+            <div id="google_translate_element"></div>
+            <a href="https://adib-info.netlify.app" target="_blank" class="dev-link">
+                <i class="fa-solid fa-code"></i> <span>Developer</span>
+            </a>
+            <button id="theme-toggle" class="theme-btn" title="Toggle Dark/Light Mode">
+                <i class="fa-solid fa-sun"></i>
+            </button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="controls-panel">
+            <div class="language-selector">
+                <label for="language">Speech Language:</label>
+                <select id="language">
+                    <option value="bn-BD">Bengali (বাংলা)</option>
+                    <option value="en-US">English</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="editor-container">
+            <div class="editor-header">
+                <button id="start-btn" class="action-btn primary-btn">
+                    <i class="fa-solid fa-microphone"></i> <span id="btn-text">Start Listening</span>
+                </button>
+                <span id="status" class="status-indicator">Ready</span>
+            </div>
+            
+            <textarea id="result-text" placeholder="Your speech will appear here... Speak clearly into your microphone."></textarea>
+            
+            <div class="editor-footer">
+                <div class="utility-btns">
+                    <button id="copy-btn" class="utility-btn" title="Copy to Clipboard">
+                        <i class="fa-regular fa-copy"></i> Copy
+                    </button>
+                    <button id="save-btn" class="utility-btn" title="Save as Text File">
+                        <i class="fa-solid fa-download"></i> Save
+                    </button>
+                    <button id="clear-btn" class="utility-btn danger-btn" title="Clear Text">
+                        <i class="fa-solid fa-trash-can"></i> Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Google Translate Script -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <!-- Main JS -->
+    <script src="script.js"></script>
+</body>
+</html>
