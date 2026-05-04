@@ -40,11 +40,18 @@
                     <option value="en-US">English</option>
                 </select>
             </div>
+            <div class="model-selector">
+                <label for="model">AI Model:</label>
+                <select id="model">
+                    <option value="base">Base Model (Default)</option>
+                    <option value="pro">Pro Model</option>
+                </select>
+            </div>
         </div>
 
         <div class="editor-container">
             <div class="editor-header">
-                <div class="header-left">
+                <div class="header-top">
                     <button id="start-btn" class="action-btn primary-btn">
                         <i class="fa-solid fa-microphone"></i> <span id="btn-text">Start Listening</span>
                     </button>
@@ -57,8 +64,11 @@
                     <button id="rewrite-btn" class="utility-btn ai-btn" title="Rewrite & Refine">
                         <i class="fa-solid fa-pen-nib"></i> Rewrite
                     </button>
-                    <button id="copy-btn" class="utility-btn" title="Copy to Clipboard">
-                        <i class="fa-regular fa-copy"></i> Copy
+                    <button id="answer-btn" class="utility-btn ai-btn" title="Get AI Answer">
+                        <i class="fa-solid fa-robot"></i> Answer
+                    </button>
+                    <button id="copy-btn" class="utility-btn" title="Copy Main Text to Clipboard">
+                        <i class="fa-regular fa-copy"></i> Copy Main
                     </button>
                     <button id="save-btn" class="utility-btn" title="Save as Text File">
                         <i class="fa-solid fa-download"></i> Save
@@ -71,6 +81,22 @@
 
             <textarea id="result-text"
                 placeholder="Your speech will appear here... Speak clearly into your microphone."></textarea>
+            
+            <div id="results-container" class="results-container">
+                <!-- AI Results will appear here as separate cards -->
+            </div>
+        </div>
+
+        <div class="history-container">
+            <div class="history-header">
+                <h3>History</h3>
+                <button id="clear-history-btn" class="utility-btn danger-btn" title="Clear History">
+                    <i class="fa-solid fa-trash-can"></i> Clear All
+                </button>
+            </div>
+            <div class="history-list" id="history-list">
+                <!-- History items will be prepended here -->
+            </div>
         </div>
     </main>
 
