@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +12,7 @@
     <!-- Main CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body class="dark-mode">
 
     <nav class="navbar">
@@ -42,16 +44,19 @@
 
         <div class="editor-container">
             <div class="editor-header">
-                <button id="start-btn" class="action-btn primary-btn">
-                    <i class="fa-solid fa-microphone"></i> <span id="btn-text">Start Listening</span>
-                </button>
-                <span id="status" class="status-indicator">Ready</span>
-            </div>
-            
-            <textarea id="result-text" placeholder="Your speech will appear here... Speak clearly into your microphone."></textarea>
-            
-            <div class="editor-footer">
+                <div class="header-left">
+                    <button id="start-btn" class="action-btn primary-btn">
+                        <i class="fa-solid fa-microphone"></i> <span id="btn-text">Start Listening</span>
+                    </button>
+                    <span id="status" class="status-indicator">Ready</span>
+                </div>
                 <div class="utility-btns">
+                    <button id="translate-btn" class="utility-btn ai-btn" title="Translate Text">
+                        <i class="fa-solid fa-language"></i> Translate
+                    </button>
+                    <button id="rewrite-btn" class="utility-btn ai-btn" title="Rewrite & Refine">
+                        <i class="fa-solid fa-pen-nib"></i> Rewrite
+                    </button>
                     <button id="copy-btn" class="utility-btn" title="Copy to Clipboard">
                         <i class="fa-regular fa-copy"></i> Copy
                     </button>
@@ -63,6 +68,9 @@
                     </button>
                 </div>
             </div>
+
+            <textarea id="result-text"
+                placeholder="Your speech will appear here... Speak clearly into your microphone."></textarea>
         </div>
     </main>
 
@@ -76,7 +84,8 @@
             }, 'google_translate_element');
         }
     </script>
-    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script type="text/javascript"
+        src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
     <!-- Main JS -->
     <script src="script.js"></script>

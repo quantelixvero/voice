@@ -199,6 +199,13 @@ body {
     padding: 1rem 1.5rem;
     border-bottom: 1px solid var(--border-color);
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.header-left {
+    display: flex;
     align-items: center;
     gap: 1.5rem;
 }
@@ -254,13 +261,7 @@ textarea::placeholder {
     color: var(--text-muted);
 }
 
-.editor-footer {
-    padding: 1rem 1.5rem;
-    border-top: 1px solid var(--border-color);
-    display: flex;
-    justify-content: flex-end;
-    background-color: rgba(0, 0, 0, 0.02);
-}
+
 
 .utility-btns {
     display: flex;
@@ -294,7 +295,30 @@ textarea::placeholder {
     background-color: rgba(239, 68, 68, 0.1);
 }
 
+.ai-btn {
+    color: var(--primary-color);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.ai-btn:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+.ai-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.ai-btn i.fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
 /* Animations */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 @keyframes pulse {
     0% {
         box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);

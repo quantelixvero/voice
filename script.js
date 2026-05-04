@@ -9,6 +9,8 @@ const resultTextarea = document.getElementById('result-text');
 const copyBtn = document.getElementById('copy-btn');
 const saveBtn = document.getElementById('save-btn');
 const clearBtn = document.getElementById('clear-btn');
+const translateBtn = document.getElementById('translate-btn');
+const rewriteBtn = document.getElementById('rewrite-btn');
 
 // Theme Management
 let isDarkMode = true;
@@ -39,15 +41,16 @@ themeToggle.addEventListener('click', () => {
 // Speech Recognition Setup
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
+let recognition;
+let isRecording = false;
+
 if (!SpeechRecognition) {
     statusText.textContent = "Your browser does not support Speech Recognition. Please use Chrome.";
     startBtn.disabled = true;
 } else {
-    const recognition = new SpeechRecognition();
+    recognition = new SpeechRecognition();
     recognition.continuous = true;
     recognition.interimResults = true;
-    
-    let isRecording = false;
 
     // Set initial language
     recognition.lang = languageSelect.value;
@@ -129,6 +132,11 @@ copyBtn.addEventListener('click', () => {
     resultTextarea.select();
     document.execCommand('copy');
     
+    // Auto-stop listening
+    if (recognition && isRecording) {
+        recognition.stop();
+    }
+    
     // Visual feedback
     const originalText = copyBtn.innerHTML;
     copyBtn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
@@ -138,9 +146,7 @@ copyBtn.addEventListener('click', () => {
 });
 
 clearBtn.addEventListener('click', () => {
-    if(confirm("Are you sure you want to clear the text?")) {
-        resultTextarea.value = '';
-    }
+    resultTextarea.value = '';
 });
 
 saveBtn.addEventListener('click', () => {
@@ -156,4 +162,91 @@ saveBtn.addEventListener('click', () => {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+});
+
+// Groq API Integration for AI Features
+const GROQ_API_KEY = "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";
+
+async function callGroqAPI(systemPrompt, userText, buttonElement, originalHTML) {
+    if (!userText.trim()) return;
+    
+    // UI Loading state
+    buttonElement.disabled = true;
+    buttonElement.innerHTML = '<i class="fa-solid fa-spinner"></i> Processing...';
+    
+    // Auto-stop listening if active
+    if (recognition && isRecording) {
+        recognition.stop();
+    }
+    
+    const previousStatus = statusText.textContent;
+    statusText.textContent = "AI is thinking...";
+    statusText.style.color = 'var(--primary-color)';
+    
+    try {
+        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${GROQ_API_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: 'llama-3.3-70b-versatile',
+                messages: [
+                    { role: 'system', content: systemPrompt },
+                    { role: 'user', content: userText }
+                ],
+                temperature: 0.3,
+                max_tokens: 1024
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`API Error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const outputText = data.choices[0].message.content.trim();
+        
+        // Update textarea
+        resultTextarea.value = outputText;
+        statusText.textContent = "AI task complete.";
+        statusText.style.color = 'var(--success-color)';
+        setTimeout(() => {
+            if (statusText.textContent === "AI task complete.") {
+                statusText.textContent = "Ready";
+                statusText.style.color = 'var(--text-muted)';
+            }
+        }, 3000);
+
+    } catch (error) {
+        console.error("Groq API Error:", error);
+        alert("Failed to process with AI. Please try again later.");
+        statusText.textContent = "AI request failed.";
+        statusText.style.color = 'var(--danger-color)';
+    } finally {
+        buttonElement.disabled = false;
+        buttonElement.innerHTML = originalHTML;
+    }
+}
+
+// AI Feature Event Listeners
+translateBtn.addEventListener('click', () => {
+    const text = resultTextarea.value;
+    if (!text.trim()) {
+        alert("Please enter some text or use voice typing first.");
+        return;
+    }
+    const systemPrompt = "You are a highly skilled translator. Identify the language of the following text. If it is in Bengali, translate it perfectly to English. If it is in English, translate it perfectly to Bengali. Output ONLY the translated text without any quotes, explanations, or conversational filler. Keep the tone natural.";
+    callGroqAPI(systemPrompt, text, translateBtn, '<i class="fa-solid fa-language"></i> Translate');
+});
+
+rewriteBtn.addEventListener('click', () => {
+    const text = resultTextarea.value;
+    if (!text.trim()) {
+        alert("Please enter some text or use voice typing first.");
+        return;
+    }
+    const systemPrompt = "You are an expert editor. Rewrite and refine the following text to make it clear, professional, well-structured, and grammatically correct. Do not change the original meaning, and do not remove any core information. Output ONLY the refined text without any quotes, explanations, or conversational filler. Keep the language the same as the input language.";
+    callGroqAPI(systemPrompt, text, rewriteBtn, '<i class="fa-solid fa-pen-nib"></i> Rewrite');
 });
