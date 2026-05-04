@@ -264,6 +264,8 @@ loadHistory();
 // AI Models & APIs
 const GROQ_API_KEY = "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";
 const GEMINI_API_KEY = "AIzaSyAtlf_d92szRiQ1e5yb7Eyp63wW9UMDMTE";
+const GEMINI_PRO_API_KEY = "AIzaSyA45ACiYF6aXnQm0bnbM3NRdoOrOcsCn10";
+const GEMINI_PRO2_API_KEY = "AIzaSyCUx1fNBVBHoPA6WE_JZ8yzFL6GB-ShefI";
 
 const modelSelect = document.getElementById('model');
 
@@ -293,9 +295,17 @@ async function callAI(systemPrompt, userText, buttonElement, originalHTML, taskN
             strictUserText = `Text to process:\n${userText}\n\nRule: Output ONLY the result based on the system instruction. NO conversational filler.`;
         }
 
-        if (selectedModel === 'pro') {
+        if (selectedModel === 'plus' || selectedModel === 'pro1' || selectedModel === 'pro2') {
             // Gemini API Call
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+            let url;
+            if (selectedModel === 'plus') {
+                url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${GEMINI_API_KEY}`;
+            } else if (selectedModel === 'pro1') {
+                url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_PRO_API_KEY}`;
+            } else {
+                url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_PRO2_API_KEY}`;
+            }
+            
             const prompt = `System Instruction: ${systemPrompt}\n\n${strictUserText}`;
             
             const response = await fetch(url, {
@@ -351,13 +361,18 @@ async function callAI(systemPrompt, userText, buttonElement, originalHTML, taskN
         // Add Original to history before modification
         addToHistory(userText, "Original Text");
 
+        let modelLabel = 'Base Model';
+        if (selectedModel === 'plus') modelLabel = 'Plus Model';
+        if (selectedModel === 'pro1') modelLabel = 'Pro Model 1.0';
+        if (selectedModel === 'pro2') modelLabel = 'Pro Model 2.0';
+
         // Create a result card in the results-container
         const resultsContainer = document.getElementById('results-container');
         const card = document.createElement('div');
         card.className = 'result-card';
         card.innerHTML = `
             <div class="result-header">
-                <span class="result-label"><i class="fa-solid fa-wand-magic-sparkles"></i> ${taskName} Result (${selectedModel === 'pro' ? 'Pro Model' : 'Base Model'})</span>
+                <span class="result-label"><i class="fa-solid fa-wand-magic-sparkles"></i> ${taskName} Result (${modelLabel})</span>
                 <button class="utility-btn result-copy-btn" title="Copy Result">
                     <i class="fa-regular fa-copy"></i> Copy
                 </button>
@@ -377,8 +392,7 @@ async function callAI(systemPrompt, userText, buttonElement, originalHTML, taskN
         resultsContainer.prepend(card);
         
         // Add Result to history panel
-        const modelName = selectedModel === 'pro' ? 'Pro Model' : 'Base Model';
-        addToHistory(outputText, `${taskName} Result (${modelName})`);
+        addToHistory(outputText, `${taskName} Result (${modelLabel})`);
 
         statusText.textContent = "AI task complete.";
         statusText.style.color = 'var(--success-color)';
